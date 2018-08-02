@@ -29,7 +29,7 @@ public class CORSFilter implements Filter {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "72000");
         chain.doFilter(req, res);
-        //LOG.info(".......the filter has been chained........");
+        LOG.info(".......the filter has been chained........");
     }
 
     @Override
