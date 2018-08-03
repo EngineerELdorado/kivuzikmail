@@ -25,7 +25,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public Collection<KivuzikUser> getAll() {
-        return userRepository.findAll();
+        return userRepository.getSample();
     }
 
     @Override
