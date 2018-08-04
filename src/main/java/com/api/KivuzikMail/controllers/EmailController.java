@@ -34,16 +34,20 @@ public class EmailController {
 
          for(KivuzikUser kivuzikUser: kivuzikUsers){
              emailMessage.setTo(kivuzikUser.getEmail());
-             try {
+            if(kivuzikUser.getEmail().equals("dannyizinga@gmail.com") || kivuzikUser.getEmail().equals("deniskalenga94@gmail.com"))
+            {
+                try {
 
-                 emailService.sendSimpleMail(emailMessage);
-                 LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
-             }
-             catch (Exception e)
-             {
-                 e.printStackTrace();
-                 LOG.error("error "+e.toString());
-             }
+                    emailService.sendSimpleMail(emailMessage);
+                    LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    LOG.error("error "+e.toString());
+                }
+            }
+
          }
          httpHeaders.add("response_message","Operation reussie");
          return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
