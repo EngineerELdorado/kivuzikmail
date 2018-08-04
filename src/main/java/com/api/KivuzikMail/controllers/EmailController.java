@@ -29,7 +29,7 @@ public class EmailController {
      @PostMapping("/send")
      public ResponseEntity<?>sendEmail(@RequestBody EmailMessage emailMessage){
 
-         LOG.info("REQUEST ARRIVED");
+         LOG.info("REQUEST ARRIVED subject: "+emailMessage.getTitle()+" body: "+emailMessage.getBody());
          Collection<KivuzikUser>kivuzikUsers = userService.getAll();
 
          for(KivuzikUser kivuzikUser: kivuzikUsers){
