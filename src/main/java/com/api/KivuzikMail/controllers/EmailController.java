@@ -1,11 +1,14 @@
 package com.api.KivuzikMail.controllers;
 
+import com.api.KivuzikMail.configs.RabbitMqConfiguration;
 import com.api.KivuzikMail.models.EmailMessage;
 import com.api.KivuzikMail.models.KivuzikUser;
 import com.api.KivuzikMail.services.IEmailService;
 import com.api.KivuzikMail.services.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+
+import static com.api.KivuzikMail.configs.RabbitMqConfiguration.KIVUZIK_EMAIL;
 
 @RestController
 @RequestMapping("/emails")
@@ -23,49 +28,27 @@ public class EmailController {
      IUserService userService;
      @Autowired
      IEmailService emailService;
+     @Autowired
+     RabbitTemplate rabbitTemplate;
      Logger LOG = LogManager.getLogger(EmailController.class);
 
      HttpHeaders httpHeaders = new HttpHeaders();
-//     @PostMapping("/send")
-//     public ResponseEntity<?>sendEmail(@RequestBody EmailMessage emailMessage){
-//
-//         LOG.info("REQUEST ARRIVED subject: "+emailMessage.getTitle()+" body: "+emailMessage.getBody());
-//         Collection<KivuzikUser>kivuzikUsers = userService.getAll();
-//
-//         for(KivuzikUser kivuzikUser: kivuzikUsers){
-//             emailMessage.setTo(kivuzikUser.getEmail());
-//
-//                try {
-//
-//                    emailService.sendSimpleMail(emailMessage);
-//                    LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
-//                }
-//                catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                    LOG.error("error "+e.toString());
-//                }
-//
-//
-//         }
-//         httpHeaders.add("response_message","Operation reussie");
-//         return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
-//     }
+
 
     @PostMapping("/send")
-    public ResponseEntity<?>sendEmail(@RequestBody EmailMessage emailMessage){
+    public void sendEmail(@RequestBody EmailMessage emailMessage){
 
         LOG.info("REQUEST ARRIVED subject: "+emailMessage.getTitle()+" body: "+emailMessage.getBody());
         Collection<KivuzikUser>kivuzikUsers = userService.getAll();
 
         for(KivuzikUser kivuzikUser: kivuzikUsers){
-            emailMessage.setTo(kivuzikUser.getEmail());
 
             if (kivuzikUser.getEmail().equals("deniskalenga94@gmail.com") || kivuzikUser.getEmail().equals("dannyizinga@gmail.com")){
-                try {
+                emailMessage.setTo(kivuzikUser.getEmail());
 
-                    emailService.sendSimpleMail(emailMessage);
-                    LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
+                try {
+                    rabbitTemplate.convertAndSend(KIVUZIK_EMAIL,KIVUZIK_EMAIL, emailMessage);
+                    LOG.info("Email sent to RabbitMq for "+kivuzikUser.getUsername());
                 }
                 catch (Exception e)
                 {
@@ -76,7 +59,26 @@ public class EmailController {
 
 
         }
-        httpHeaders.add("response_message","Operation reussie");
-        return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
     }
+
+     @RabbitListener(queues = KIVUZIK_EMAIL)
+     public void pushEmail(EmailMessage emailMessage){
+
+         LOG.info("REQUEST ARRIVED subject: "+emailMessage.getTitle()+" body: "+emailMessage.getBody());
+         KivuzikUser kivuzikUser = userService.findByEmail(emailMessage.getTo());
+
+                try {
+
+                    emailService.sendSimpleMail(emailMessage);
+                    LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    LOG.error("error "+e.toString());
+                }
+
+     }
+
+
 }

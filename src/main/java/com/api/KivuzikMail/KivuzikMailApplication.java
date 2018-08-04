@@ -4,6 +4,7 @@ import com.api.KivuzikMail.models.KivuzikUser;
 import com.api.KivuzikMail.services.IUserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +17,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
+
+@EnableRabbit
 @SpringBootApplication
 public class KivuzikMailApplication {
 
