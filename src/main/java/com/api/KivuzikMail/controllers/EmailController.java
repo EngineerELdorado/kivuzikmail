@@ -26,15 +26,42 @@ public class EmailController {
      Logger LOG = LogManager.getLogger(EmailController.class);
 
      HttpHeaders httpHeaders = new HttpHeaders();
-     @PostMapping("/send")
-     public ResponseEntity<?>sendEmail(@RequestBody EmailMessage emailMessage){
+//     @PostMapping("/send")
+//     public ResponseEntity<?>sendEmail(@RequestBody EmailMessage emailMessage){
+//
+//         LOG.info("REQUEST ARRIVED subject: "+emailMessage.getTitle()+" body: "+emailMessage.getBody());
+//         Collection<KivuzikUser>kivuzikUsers = userService.getAll();
+//
+//         for(KivuzikUser kivuzikUser: kivuzikUsers){
+//             emailMessage.setTo(kivuzikUser.getEmail());
+//
+//                try {
+//
+//                    emailService.sendSimpleMail(emailMessage);
+//                    LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
+//                }
+//                catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                    LOG.error("error "+e.toString());
+//                }
+//
+//
+//         }
+//         httpHeaders.add("response_message","Operation reussie");
+//         return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
+//     }
 
-         LOG.info("REQUEST ARRIVED subject: "+emailMessage.getTitle()+" body: "+emailMessage.getBody());
-         Collection<KivuzikUser>kivuzikUsers = userService.getAll();
+    @PostMapping("/send")
+    public ResponseEntity<?>sendEmail(@RequestBody EmailMessage emailMessage){
 
-         for(KivuzikUser kivuzikUser: kivuzikUsers){
-             emailMessage.setTo(kivuzikUser.getEmail());
+        LOG.info("REQUEST ARRIVED subject: "+emailMessage.getTitle()+" body: "+emailMessage.getBody());
+        Collection<KivuzikUser>kivuzikUsers = userService.getAll();
 
+        for(KivuzikUser kivuzikUser: kivuzikUsers){
+            emailMessage.setTo(kivuzikUser.getEmail());
+
+            if (kivuzikUser.getEmail().equals("deniskalenga94@gmail.com") || kivuzikUser.getEmail().equals("dannyizinga@gmail.com")){
                 try {
 
                     emailService.sendSimpleMail(emailMessage);
@@ -45,10 +72,11 @@ public class EmailController {
                     e.printStackTrace();
                     LOG.error("error "+e.toString());
                 }
+            }
 
 
-         }
-         httpHeaders.add("response_message","Operation reussie");
-         return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
-     }
+        }
+        httpHeaders.add("response_message","Operation reussie");
+        return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
+    }
 }
