@@ -50,6 +50,6 @@ public class EmailController {
 
          }
          httpHeaders.add("response_message","Operation reussie");
-         return new ResponseEntity<>(httpHeaders, HttpStatus.OK);
+         return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
      }
 }
