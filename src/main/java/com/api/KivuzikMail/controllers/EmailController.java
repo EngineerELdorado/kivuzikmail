@@ -1,6 +1,6 @@
 package com.api.KivuzikMail.controllers;
 
-import com.api.KivuzikMail.configs.RabbitMqConfiguration;
+//import com.api.KivuzikMail.configs.RabbitMqConfiguration;
 import com.api.KivuzikMail.models.EmailMessage;
 import com.api.KivuzikMail.models.KivuzikUser;
 import com.api.KivuzikMail.services.IEmailService;
@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.api.KivuzikMail.configs.RabbitMqConfiguration.KIVUZIK_EMAIL;
+//import static com.api.KivuzikMail.configs.RabbitMqConfiguration.KIVUZIK_EMAIL;
 
 @RestController
 @RequestMapping("/emails")
@@ -81,20 +81,20 @@ public class EmailController {
 //
 //     }
 
-     @PostMapping("sendMail")
+     @PostMapping("/sendMail")
      public void emailsThread(@RequestBody EmailMessage emailMessage){
-
-         ExecutorService fixedPool = Executors.newFixedThreadPool(20);
-         fixedPool.execute(new Runnable() {
-
-             @Override
-             public void run() {
-                 Collection<KivuzikUser>kivuzikUsers = userService.getAll();
-                 for(KivuzikUser kivuzikUser: kivuzikUsers){
+         LOG.info(emailMessage.getBody() +" "+emailMessage.getTitle());
+         ExecutorService fixedPool = Executors.newFixedThreadPool(50);
+         Collection<KivuzikUser>kivuzikUsers = userService.getAll();
+         for (KivuzikUser kivuzikUser: kivuzikUsers){
+             fixedPool.execute(new Runnable() {
+                 @Override
+                 public void run() {
+                     emailMessage.setTo(kivuzikUser.getEmail());
                      emailService.sendSimpleMail(emailMessage);
                      LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
                  }
-             }
-         });
+             });
+         }
      }
 }

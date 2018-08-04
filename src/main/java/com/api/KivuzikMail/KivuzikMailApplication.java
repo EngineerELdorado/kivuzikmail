@@ -4,7 +4,7 @@ import com.api.KivuzikMail.models.KivuzikUser;
 import com.api.KivuzikMail.services.IUserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+//import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Properties;
 
 
-@EnableRabbit
+//@EnableRabbit
 @SpringBootApplication
 public class KivuzikMailApplication {
 
@@ -32,7 +32,7 @@ public class KivuzikMailApplication {
 			// read json and write to db
 			ObjectMapper mapper = new ObjectMapper();
 			TypeReference<List<KivuzikUser>> typeReference = new TypeReference<List<KivuzikUser>>(){};
-			InputStream inputStream = TypeReference.class.getResourceAsStream("/json/users2.json");
+			InputStream inputStream = TypeReference.class.getResourceAsStream("/json/users.json");
 			try {
 				List<KivuzikUser> users = mapper.readValue(inputStream,typeReference);
 				userService.save(users);
