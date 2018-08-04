@@ -32,7 +32,7 @@ public class KivuzikMailApplication {
 			// read json and write to db
 			ObjectMapper mapper = new ObjectMapper();
 			TypeReference<List<KivuzikUser>> typeReference = new TypeReference<List<KivuzikUser>>(){};
-			InputStream inputStream = TypeReference.class.getResourceAsStream("/json/users.json");
+			InputStream inputStream = TypeReference.class.getResourceAsStream("/json/users2.json");
 			try {
 				List<KivuzikUser> users = mapper.readValue(inputStream,typeReference);
 				userService.save(users);

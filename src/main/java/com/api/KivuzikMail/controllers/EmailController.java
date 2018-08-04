@@ -38,12 +38,11 @@ public class EmailController {
     @PostMapping("/send")
     public void sendEmail(@RequestBody EmailMessage emailMessage){
 
-        LOG.info("REQUEST ARRIVED subject: "+emailMessage.getTitle()+" body: "+emailMessage.getBody());
+        //LOG.info("REQUEST ARRIVED subject: "+emailMessage.getTitle()+" body: "+emailMessage.getBody());
         Collection<KivuzikUser>kivuzikUsers = userService.getAll();
 
         for(KivuzikUser kivuzikUser: kivuzikUsers){
 
-            if (kivuzikUser.getEmail().equals("deniskalenga94@gmail.com") || kivuzikUser.getEmail().equals("dannyizinga@gmail.com")){
                 emailMessage.setTo(kivuzikUser.getEmail());
 
                 try {
@@ -55,7 +54,7 @@ public class EmailController {
                     e.printStackTrace();
                     LOG.error("error "+e.toString());
                 }
-            }
+
 
 
         }
