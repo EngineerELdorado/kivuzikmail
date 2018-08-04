@@ -34,8 +34,7 @@ public class EmailController {
 
          for(KivuzikUser kivuzikUser: kivuzikUsers){
              emailMessage.setTo(kivuzikUser.getEmail());
-            if(kivuzikUser.getEmail().equals("dannyizinga@gmail.com") || kivuzikUser.getEmail().equals("deniskalenga94@gmail.com"))
-            {
+
                 try {
 
                     emailService.sendSimpleMail(emailMessage);
@@ -46,7 +45,7 @@ public class EmailController {
                     e.printStackTrace();
                     LOG.error("error "+e.toString());
                 }
-            }
+
 
          }
          httpHeaders.add("response_message","Operation reussie");
