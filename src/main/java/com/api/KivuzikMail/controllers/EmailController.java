@@ -89,13 +89,11 @@ public class EmailController {
          ExecutorService fixedPool = Executors.newFixedThreadPool(coreCount);
          Collection<KivuzikUser>kivuzikUsers = userService.getAll();
          for (KivuzikUser kivuzikUser: kivuzikUsers){
-             fixedPool.execute(new Runnable() {
-                 @Override
-                 public void run() {
-                     emailMessage.setTo(kivuzikUser.getEmail());
-                     emailService.sendSimpleMail(emailMessage);
-                     LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
-                 }
+             fixedPool.execute(() -> {
+                
+                 emailMessage.setTo(kivuzikUser.getEmail());
+                 emailService.sendSimpleMail(emailMessage);
+                 LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
              });
          }
      }
