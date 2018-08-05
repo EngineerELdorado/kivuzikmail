@@ -84,7 +84,9 @@ public class EmailController {
      @PostMapping("/sendMail")
      public void emailsThread(@RequestBody EmailMessage emailMessage){
          LOG.info(emailMessage.getBody() +" "+emailMessage.getTitle());
-         ExecutorService fixedPool = Executors.newFixedThreadPool(50);
+         int coreCount = Runtime.getRuntime().availableProcessors();
+         LOG.info("CORE COUNT "+ coreCount);
+         ExecutorService fixedPool = Executors.newFixedThreadPool(coreCount);
          Collection<KivuzikUser>kivuzikUsers = userService.getAll();
          for (KivuzikUser kivuzikUser: kivuzikUsers){
              fixedPool.execute(new Runnable() {
