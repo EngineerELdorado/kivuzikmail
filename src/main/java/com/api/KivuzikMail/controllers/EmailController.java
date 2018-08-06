@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -86,15 +87,21 @@ public class EmailController {
          LOG.info(emailMessage.getBody() +" "+emailMessage.getTitle());
          int coreCount = Runtime.getRuntime().availableProcessors();
          LOG.info("CORE COUNT "+ coreCount);
-         ExecutorService fixedPool = Executors.newFixedThreadPool(coreCount);
+         ExecutorService fixedPool = Executors.newCachedThreadPool();
          Collection<KivuzikUser>kivuzikUsers = userService.getAll();
          for (KivuzikUser kivuzikUser: kivuzikUsers){
              fixedPool.execute(() -> {
-                
-                 emailMessage.setTo(kivuzikUser.getEmail());
-                 emailService.sendSimpleMail(emailMessage);
-                 LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
+                 //LOG.info(" user in the thread "+kivuzikUser.getEmail());
+
+                 try {
+                     //emailMessage.setTo(kivuzikUser.getEmail());
+                     emailService.sendSimpleMail(emailMessage, kivuzikUser.getEmail());
+                 } catch (UnsupportedEncodingException e) {
+                     e.printStackTrace();
+                 }
+                 //LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
              });
-         }
+         };
+         fixedPool.shutdown();
      }
 }
