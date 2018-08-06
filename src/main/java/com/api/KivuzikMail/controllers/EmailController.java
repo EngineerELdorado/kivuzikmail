@@ -92,7 +92,7 @@ public class EmailController {
          ExecutorService fixedPool = Executors.newFixedThreadPool(coreCount);
          Collection<KivuzikUser>kivuzikUsers = userService.getAll();
          for (KivuzikUser kivuzikUser: kivuzikUsers){
-             
+
              fixedPool.execute(() -> {
                  //LOG.info(" user in the thread "+kivuzikUser.getEmail());
 
@@ -108,7 +108,7 @@ public class EmailController {
          //fixedPool.shutdown();
          long end_time = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis());
          long result = end_time-start_time;
-         if(result<1){
+         if(result<1L){
              LOG.info("TIME TAKEN: "+ String.valueOf(result)+" seoonds");
          }
          else {
