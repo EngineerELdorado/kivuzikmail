@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 //import static com.api.KivuzikMail.configs.RabbitMqConfiguration.KIVUZIK_EMAIL;
 
@@ -38,7 +39,7 @@ public class EmailController {
      HttpHeaders httpHeaders = new HttpHeaders();
 
 
-    long start_time = System.currentTimeMillis();
+    long start_time = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis());
 //    @PostMapping("/send")
 //    public void sendEmail(@RequestBody EmailMessage emailMessage){
 //
@@ -105,8 +106,15 @@ public class EmailController {
 //             });
          };
          //fixedPool.shutdown();
-         long end_time = System.currentTimeMillis();
+         long end_time = TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis());
+         long result = end_time-start_time;
+         if(result<60){
+             LOG.info("TIME TAKEN: "+ String.valueOf(result)+" seoonds");
+         }
+         else {
+             LOG.info("TIME TAKEN: "+ String.valueOf(result)+" minutes");
+         }
 
-         LOG.info("TIME TAKEN: "+ String.valueOf(end_time-start_time));
+
      }
 }
