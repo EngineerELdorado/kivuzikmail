@@ -38,6 +38,7 @@ public class EmailController {
      HttpHeaders httpHeaders = new HttpHeaders();
 
 
+    long start_time = System.currentTimeMillis();
 //    @PostMapping("/send")
 //    public void sendEmail(@RequestBody EmailMessage emailMessage){
 //
@@ -104,5 +105,8 @@ public class EmailController {
 //             });
          };
          //fixedPool.shutdown();
+         long end_time = System.currentTimeMillis();
+
+         LOG.info("TIME TAKEN: "+ String.valueOf(end_time-start_time));
      }
 }
