@@ -18,10 +18,14 @@ public class EmailServiceImpl implements IEmailService {
 
     @Autowired
     public JavaMailSender emailSender;
+    int totalAttempts=0;
+    int failedAttempts=0;
+    int successfulAttempts=0;
     Logger log = LogManager.getLogger(EmailServiceImpl.class);
 
     @Override
     public void sendSimpleMail(EmailMessage emailMessage, String email) {
+          totalAttempts++;
 //        log.info("received user "+emailMessage.getTo());
 //
 //        SimpleMailMessage message = new SimpleMailMessage();
@@ -41,14 +45,17 @@ public class EmailServiceImpl implements IEmailService {
             message.setSubject(emailMessage.getTitle());
             message.setText(emailMessage.getBody(), true);
             emailSender.send(mimeMessage);
-
+            successfulAttempts++;
             log.info("Sent email to User '{}'", email);
         } catch (Exception e) {
+            failedAttempts++;
             if (log.isDebugEnabled()) {
                 log.info("Email could not be sent to user '{}'", email, e);
             } else {
                 log.info("Email could not be sent to user '{}': {}", email, e.getMessage());
             }
         }
+
+        log.info("ATTEMPTS \n total: "+totalAttempts+"\n failed: "+failedAttempts+"\n successful: "+successfulAttempts);
     }
 }
