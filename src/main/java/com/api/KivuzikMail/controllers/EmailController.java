@@ -83,25 +83,26 @@ public class EmailController {
 //     }
 
      @PostMapping("/sendMail")
-     public void emailsThread(@RequestBody EmailMessage emailMessage){
+     public void emailsThread(@RequestBody EmailMessage emailMessage) throws UnsupportedEncodingException {
          LOG.info(emailMessage.getBody() +" "+emailMessage.getTitle());
          int coreCount = Runtime.getRuntime().availableProcessors();
          LOG.info("CORE COUNT "+ coreCount);
          ExecutorService fixedPool = Executors.newFixedThreadPool(coreCount);
          Collection<KivuzikUser>kivuzikUsers = userService.getAll();
          for (KivuzikUser kivuzikUser: kivuzikUsers){
-             fixedPool.execute(() -> {
-                 //LOG.info(" user in the thread "+kivuzikUser.getEmail());
-
-                 try {
-                     //emailMessage.setTo(kivuzikUser.getEmail());
-                     emailService.sendSimpleMail(emailMessage, kivuzikUser.getEmail());
-                 } catch (UnsupportedEncodingException e) {
-                     e.printStackTrace();
-                 }
-                 //LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
-             });
+             emailService.sendSimpleMail(emailMessage, kivuzikUser.getEmail());
+//             fixedPool.execute(() -> {
+//                 //LOG.info(" user in the thread "+kivuzikUser.getEmail());
+//
+//                 try {
+//                     //emailMessage.setTo(kivuzikUser.getEmail());
+//                     emailService.sendSimpleMail(emailMessage, kivuzikUser.getEmail());
+//                 } catch (UnsupportedEncodingException e) {
+//                     e.printStackTrace();
+//                 }
+//                 //LOG.info("email envoyE A "+ kivuzikUser.getUsername() +" / "+kivuzikUser.getEmail());
+//             });
          };
-         fixedPool.shutdown();
+         //fixedPool.shutdown();
      }
 }
