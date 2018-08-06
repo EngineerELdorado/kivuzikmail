@@ -87,7 +87,7 @@ public class EmailController {
          LOG.info(emailMessage.getBody() +" "+emailMessage.getTitle());
          int coreCount = Runtime.getRuntime().availableProcessors();
          LOG.info("CORE COUNT "+ coreCount);
-         ExecutorService fixedPool = Executors.newCachedThreadPool();
+         ExecutorService fixedPool = Executors.newFixedThreadPool(coreCount);
          Collection<KivuzikUser>kivuzikUsers = userService.getAll();
          for (KivuzikUser kivuzikUser: kivuzikUsers){
              fixedPool.execute(() -> {
